@@ -38,9 +38,14 @@ class MyMap extends Component {
   handleOnReady(name) {
     GoogleMaps.ready(name, map => {
       Tracker.autorun(c => {
-        google.maps.event.addListener(map.instance, 'click', function(event) {
-          Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+        google.maps.event.addListener(map.instance, 'dblclick', function(event) {
+          Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng(), info:"here" });
         });
+
+        google.maps.event.addListener(map.instance, 'click', function(event) {
+
+        });
+
 
         const markers = {};
 
@@ -59,6 +64,16 @@ class MyMap extends Component {
                 $set: { lat: event.latLng.lat(), lng: event.latLng.lng() },
               });
             });
+             var contentString = 'check'
+
+            var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+            google.maps.event.addListener(marker, 'click', function(event) {
+                infowindow.open(map, marker);
+            });
+
 
             markers[document._id] = marker;
           },
@@ -86,13 +101,21 @@ class MyMap extends Component {
    alert('A name was submitted: ' + this.state.value + "Latitude " + this.state.latitude);
    event.preventDefault();
  }
- handleChange(event) {
-  this.setState({value: event.target.value});
-}
-handlelChange(event) {
-   this.setState({latitude: event.target.value});
-}
+
+   handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handlelChange(event) {
+    this.setState({latitude: event.target.value});
+  }
+
+
+
+
   render() {
+
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
